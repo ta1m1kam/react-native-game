@@ -3,15 +3,27 @@
     "name": "Shake Game",
     "slug": "shake-game",
     "version": "1.0.0",
+    "description": "スマホを振って競う爽快シェイクゲーム！制限時間内にどれだけ振れるかチャレンジしよう。",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "shakegame",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "primaryColor": "#4A90D9",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ta1m1kam.shakegame",
+      "buildNumber": "1",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSMotionUsageDescription": "シェイク回数を計測するために加速度センサーを使用します。",
+        "CFBundleLocalizations": ["ja", "en"],
+        "CFBundleDevelopmentRegion": "ja"
+      }
     },
     "android": {
+      "package": "com.ta1m1kam.shakegame",
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -43,6 +55,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "f29b40db-d6f0-416b-84e8-e412440df5bc"
+      }
     }
   }
 }

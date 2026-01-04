@@ -16,23 +16,45 @@ interface UseShakeDetectorReturn {
   reset: () => void;
 }
 
+const STRONG_SHAKE_MULTIPLIER = 2.0;
+const MEDIUM_SHAKE_MULTIPLIER = 1.5;
+const MILESTONE_INTERVAL = 10;
+
 export function useShakeDetector(): UseShakeDetectorReturn {
   const [shakeCount, setShakeCount] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const prevDataRef = useRef<AccelerometerData>({ x: 0, y: 0, z: 0 });
   const lastShakeTimeRef = useRef(0);
   const subscriptionRef = useRef<ReturnType<typeof Accelerometer.addListener> | null>(null);
+  const shakeCountRef = useRef(0);
 
-  const detectShake = useCallback(
-    (current: AccelerometerData, prev: AccelerometerData): boolean => {
+  const getShakeIntensity = useCallback(
+    (current: AccelerometerData, prev: AccelerometerData): number => {
       const deltaX = Math.abs(current.x - prev.x);
       const deltaY = Math.abs(current.y - prev.y);
       const deltaZ = Math.abs(current.z - prev.z);
-      const totalDelta = Math.sqrt(deltaX ** 2 + deltaY ** 2 + deltaZ ** 2);
-      return totalDelta > SHAKE_THRESHOLD;
+      return Math.sqrt(deltaX ** 2 + deltaY ** 2 + deltaZ ** 2);
     },
     []
   );
+
+  const triggerHaptic = useCallback((intensity: number, newCount: number) => {
+    const isMilestone = newCount > 0 && newCount % MILESTONE_INTERVAL === 0;
+
+    if (isMilestone) {
+      // マイルストーン: 連続した強い振動
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setTimeout(() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+      }, 100);
+    } else if (intensity > SHAKE_THRESHOLD * STRONG_SHAKE_MULTIPLIER) {
+      // 強いシェイク: Heavy
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    } else {
+      // 通常シェイク: Medium（Lightより強く）
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+  }, []);
 
   useEffect(() => {
     if (!isActive) {
@@ -47,13 +69,16 @@ export function useShakeDetector(): UseShakeDetectorReturn {
 
     subscriptionRef.current = Accelerometer.addListener((data) => {
       const now = Date.now();
-      const isShake = detectShake(data, prevDataRef.current);
+      const intensity = getShakeIntensity(data, prevDataRef.current);
+      const isShake = intensity > SHAKE_THRESHOLD;
       const isCooldownPassed = now - lastShakeTimeRef.current > SHAKE_COOLDOWN_MS;
 
       if (isShake && isCooldownPassed) {
-        setShakeCount((prev) => prev + 1);
+        const newCount = shakeCountRef.current + 1;
+        shakeCountRef.current = newCount;
+        setShakeCount(newCount);
         lastShakeTimeRef.current = now;
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        triggerHaptic(intensity, newCount);
       }
 
       prevDataRef.current = data;
@@ -65,7 +90,7 @@ export function useShakeDetector(): UseShakeDetectorReturn {
         subscriptionRef.current = null;
       }
     };
-  }, [isActive, detectShake]);
+  }, [isActive, getShakeIntensity, triggerHaptic]);
 
   const start = useCallback(() => {
     prevDataRef.current = { x: 0, y: 0, z: 0 };
@@ -79,6 +104,7 @@ export function useShakeDetector(): UseShakeDetectorReturn {
 
   const reset = useCallback(() => {
     setShakeCount(0);
+    shakeCountRef.current = 0;
     prevDataRef.current = { x: 0, y: 0, z: 0 };
     lastShakeTimeRef.current = 0;
   }, []);

@@ -1,10 +1,18 @@
-import { useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Vibration, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withSequence,
+} from 'react-native-reanimated';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { useShakeDetector } from '../src/hooks/useShakeDetector';
 import { useGameTimer } from '../src/hooks/useGameTimer';
 import { useRanking } from '../src/hooks/useRanking';
+import { useGameSounds } from '../src/hooks/useGameSounds';
 import { colors, spacing, fontSize } from '../src/constants/theme';
 
 export default function GameScreen() {
@@ -12,6 +20,44 @@ export default function GameScreen() {
   const { shakeCount, start: startShake, stop: stopShake, reset: resetShake } = useShakeDetector();
   const { gameState, startGame, resetGame } = useGameTimer();
   const { addScore } = useRanking();
+  const { playCoinSound, playMilestoneSound } = useGameSounds();
+  const prevShakeCountRef = useRef(0);
+
+  const scoreScale = useSharedValue(1);
+
+  const scoreAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scoreScale.value }],
+  }));
+
+  useEffect(() => {
+    if (shakeCount > 0 && shakeCount > prevShakeCountRef.current) {
+      const isMilestone = shakeCount % 10 === 0;
+      const popScale = isMilestone ? 1.4 : 1.15;
+
+      // アニメーション
+      scoreScale.value = withSequence(
+        withSpring(popScale, { damping: 4, stiffness: 400 }),
+        withSpring(1, { damping: 6, stiffness: 300 })
+      );
+
+      // サウンド再生
+      if (isMilestone) {
+        playMilestoneSound();
+        // マイルストーン時は長めの振動
+        if (Platform.OS === 'android') {
+          Vibration.vibrate([0, 50, 30, 50]);
+        }
+      } else {
+        playCoinSound();
+        // 通常シェイク時は短い振動
+        if (Platform.OS === 'android') {
+          Vibration.vibrate(15);
+        }
+      }
+
+      prevShakeCountRef.current = shakeCount;
+    }
+  }, [shakeCount, playCoinSound, playMilestoneSound]);
 
   useEffect(() => {
     startGame();
@@ -58,10 +104,10 @@ export default function GameScreen() {
         <View style={styles.centerContent}>
           <Text style={styles.timerText}>{gameState.timeRemaining}</Text>
           <Text style={styles.timerLabel}>秒</Text>
-          <View style={styles.scoreContainer}>
+          <Animated.View style={[styles.scoreContainer, scoreAnimatedStyle]}>
             <Text style={styles.scoreText}>{shakeCount}</Text>
             <Text style={styles.scoreLabel}>シェイク</Text>
-          </View>
+          </Animated.View>
           <Text style={styles.instruction}>スマホを振れ！</Text>
         </View>
       );
