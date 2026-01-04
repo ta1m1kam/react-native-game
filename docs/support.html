@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>サポート - Shake Game</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      line-height: 1.8;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+    h1 {
+      font-size: 28px;
+      color: #4A90D9;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .app-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #4A90D9, #667eea);
+      border-radius: 12px;
+    }
+    h2 {
+      font-size: 20px;
+      color: #333;
+      margin-top: 32px;
+      margin-bottom: 16px;
+    }
+    p {
+      margin-bottom: 16px;
+    }
+    .faq-item {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    .faq-question {
+      font-weight: bold;
+      color: #4A90D9;
+      margin-bottom: 8px;
+    }
+    .contact-box {
+      background: linear-gradient(135deg, #E6F4FE, #f0e6fe);
+      padding: 24px;
+      border-radius: 12px;
+      margin-top: 32px;
+      text-align: center;
+    }
+    .contact-box h2 {
+      margin-top: 0;
+    }
+    .contact-box a {
+      display: inline-block;
+      background: #4A90D9;
+      color: #fff;
+      padding: 12px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 16px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .contact-box a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(74, 144, 217, 0.4);
+    }
+    .links {
+      display: flex;
+      gap: 16px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+    .links a {
+      color: #4A90D9;
+      text-decoration: none;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+    footer {
+      text-align: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #eee;
+      color: #888;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>
+      <div class="app-icon"></div>
+      サポート
+    </h1>
+
+    <p>Shake Gameをご利用いただきありがとうございます。このページではよくあるご質問への回答やお問い合わせ方法をご案内しています。</p>
+
+    <h2>よくあるご質問</h2>
+
+    <div class="faq-item">
+      <div class="faq-question">Q: シェイクがカウントされません</div>
+      <p>端末を上下に大きく振ってください。左右の動きや小さな振動では反応しにくい場合があります。また、端末のケースが重い場合は外してお試しください。</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Q: ランキングがリセットされました</div>
+      <p>アプリを再インストールすると、ローカルに保存されたランキングデータはリセットされます。申し訳ありませんが、データの復元はできません。</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Q: バッテリーの消費は大きいですか？</div>
+      <p>ゲームプレイ中のみセンサーを使用するため、通常の使用ではバッテリーへの影響は最小限です。</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Q: オフラインでも遊べますか？</div>
+      <p>はい、本アプリは完全にオフラインで動作します。インターネット接続は必要ありません。</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Q: 対応端末は？</div>
+      <p>加速度センサーを搭載したiOS/Android端末で動作します。iOS 13.0以上、Android 6.0以上を推奨しています。</p>
+    </div>
+
+    <div class="contact-box">
+      <h2>お問い合わせ</h2>
+      <p>上記で解決しない場合や、バグの報告、機能のリクエストなどございましたらお気軽にご連絡ください。</p>
+      <a href="mailto:taiga.mikami.work@gmail.com">メールで問い合わせる</a>
+    </div>
+
+    <div class="links">
+      <a href="./privacy-policy.html">プライバシーポリシー</a>
+      <a href="./index.html">アプリについて</a>
+    </div>
+
+    <footer>
+      &copy; 2026 Shake Game. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>
